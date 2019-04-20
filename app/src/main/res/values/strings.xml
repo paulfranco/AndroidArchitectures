@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidArchitectures</string>
+    <string name="message_error">sorry, there was an error. Please try again later</string>
 </resources>

@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ public class MVCActivity extends AppCompatActivity {
     private List<String> listValues = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private ListView list;
+    private CountriesController controller;
+    private Button retryButton;
+    private ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +32,12 @@ public class MVCActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mvc);
         setTitle("MVC");
 
+        controller = new CountriesController(this);
+
         list = findViewById(R.id.list);
+        retryButton = findViewById(R.id.retryButton);
+        progress = findViewById(R.id.progress);
+
         adapter = new ArrayAdapter<>(this, R.layout.row_layout, R.id.listText, listValues);
         list.setAdapter(adapter);
 
@@ -38,27 +48,31 @@ public class MVCActivity extends AppCompatActivity {
             }
         });
         ArrayList<String> vals = new ArrayList<String>();
-        vals.add("USA");
-        vals.add("Mexico");
-        vals.add("UK");
-        vals.add("China");
-        vals.add("France");
-        vals.add("USA");
-        vals.add("Mexico");
-        vals.add("UK");
-        vals.add("China");
-        vals.add("France");
-        vals.add("USA");
-        vals.add("Mexico");
-        vals.add("UK");
-        vals.add("China");
-        vals.add("France");
+
         setValues(vals);
     }
 
+    public void onRetry(View view) {
+        controller.onRefresh();
+        list.setVisibility(View.GONE);
+        retryButton.setVisibility(View.GONE);
+        progress.setVisibility(View.VISIBLE);
+
+    }
+
+    public void onError() {
+        Toast.makeText(this, R.string.message_error, Toast.LENGTH_SHORT).show();
+        progress.setVisibility(View.GONE);
+        list.setVisibility(View.GONE);
+        retryButton.setVisibility(View.VISIBLE);
+
+    }
     public void setValues(List<String> values) {
         listValues.clear();
         listValues.addAll(values);
+        retryButton.setVisibility(View.GONE);
+        progress.setVisibility(View.GONE);
+        list.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
     }
 
